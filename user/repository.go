@@ -28,7 +28,7 @@ func (r *repository) FindByEmail(email string) (User, error) {
 	var user User
 	err := r.db.Where("email = ?", email).Error
 	if err != nil {
-		user, err
+		return user, err
 	}
 
 	return user, nil
