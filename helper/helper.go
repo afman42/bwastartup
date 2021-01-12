@@ -3,7 +3,7 @@ package helper
 import "github.com/go-playground/validator/v10"
 
 type Response struct {
-	Meta meta        `json:"meta"`
+	Meta Meta        `json:"meta"`
 	Data interface{} `json:"data"`
 }
 
