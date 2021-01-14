@@ -28,6 +28,7 @@ func main() {
 	authService := auth.NewService()
 
 	userHandler := handler.NewUserHandler(userService, authService)
+	campaignHandler := handler.NewCampaignHandler(campaignService)
 
 	router := gin.Default()
 
@@ -38,6 +39,8 @@ func main() {
 	api.POST("/email_checkers", userHandler.CheckEmailAvailability)
 	api.POST("/avatars", authMiddleware(authService, userService), userHandler.UploadAvatar)
 	api.GET("/users/fetch", authMiddleware(authService, userService), userHandler.FetchUser)
+
+	api.GET("/campaigns", campaignHandler.GetCampaigns)
 
 	router.Run()
 }
