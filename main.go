@@ -2,14 +2,15 @@ package main
 
 import (
 	"bwastartup/auth"
+	"bwastartup/campaign"
 	"bwastartup/handler"
 	"bwastartup/user"
-	"log"
-	"strings"
-	"github.com/gin-gonic/gin"
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"log"
+	"strings"
 )
 
 func main() {
@@ -20,7 +21,10 @@ func main() {
 		log.Fatal(err.Error())
 	}
 	userRepository := user.NewRepository(db)
+	campaignRepository := campaign.NewRepository(db)
+
 	userService := user.NewService(userRepository)
+	campaignService := campaign.NewService(campaignRepository)
 	authService := auth.NewService()
 
 	userHandler := handler.NewUserHandler(userService, authService)
@@ -38,12 +42,12 @@ func main() {
 	router.Run()
 }
 
-func authMiddleware(authService auth.Service, userService user. Service) gin.HandlerFunc {
-	return func (c *gin.Context) {
+func authMiddleware(authService auth.Service, userService user.Service) gin.HandlerFunc {
+	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 
 		if !strings.Contains(autHeader, "Bearer") {
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,"error",nil)
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
@@ -56,25 +60,25 @@ func authMiddleware(authService auth.Service, userService user. Service) gin.Han
 
 		token, err := authService.ValidateToken(tokenString)
 		if err != nil {
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,"error",nil)
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
 		}
 
 		claim, ok := token.Claims.(jwt.MapClaims)
 		if !ok || !token.Valid {
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,"error",nil)
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
-			return	
+			return
 		}
 
 		userID := claim["user_id"].(float64)
 
 		user, err := userService.GetUserByID(userID)
 		if err != nil {
-			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized,"error",nil)
+			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
-			return 
+			return
 		}
 
 		c.Set("currentUser", user)
