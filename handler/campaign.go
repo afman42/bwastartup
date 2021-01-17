@@ -2,6 +2,8 @@ package handler
 
 import (
 	"bwastartup/campaign"
+	"bwastartup/helper"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -39,12 +41,12 @@ func (h *campaignHandler) GetCampaign(c *gin.Context) {
 		return
 	}
 
-	campaign, err := h.service.GetCampaignByID(input)
+	campaignDetail, err := h.service.GetCampaignByID(input)
 	if err != nil {
 		response := helper.APIResponse("Failed to get detail of campaign", http.StatusBadRequest, "error", nil)
 		c.JSON(http.StatusBadRequest, response)
 		return
 	}
-	response := helper.APIResponse("Campaign detail", http.StatusOk, "success", campaign)
+	response := helper.APIResponse("Campaign detail", http.StatusOk, "success", campaign.FormatCampaignDetail(campaignDetail))
 	c.JSON(http.StatusOk, response)
 }
