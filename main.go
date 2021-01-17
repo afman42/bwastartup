@@ -4,13 +4,16 @@ import (
 	"bwastartup/auth"
 	"bwastartup/campaign"
 	"bwastartup/handler"
+	"bwastartup/helper"
 	"bwastartup/user"
+	"log"
+	"net/http"
+	"strings"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
-	"strings"
 )
 
 func main() {
@@ -42,6 +45,7 @@ func main() {
 
 	api.GET("/campaigns", campaignHandler.GetCampaigns)
 	api.GET("/campaigns/:id", campaignHandler.GetCampaign)
+	api.POST("/campaigns", authMiddleware(authService, userService), campaignHandler.CreateCampaign)
 
 	router.Run()
 }
@@ -50,7 +54,7 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 
-		if !strings.Contains(autHeader, "Bearer") {
+		if !strings.Contains(authHeader, "Bearer") {
 			response := helper.APIResponse("Unauthorized", http.StatusUnauthorized, "error", nil)
 			c.AbortWithStatusJSON(http.StatusUnauthorized, response)
 			return
@@ -76,7 +80,7 @@ func authMiddleware(authService auth.Service, userService user.Service) gin.Hand
 			return
 		}
 
-		userID := claim["user_id"].(float64)
+		userID := int(claim["user_id"].(float64))
 
 		user, err := userService.GetUserByID(userID)
 		if err != nil {

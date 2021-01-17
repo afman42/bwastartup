@@ -44,7 +44,7 @@ func (h *userHandler) RegisterUser(c *gin.Context) {
 		return
 	}
 	formatter := user.FormatUser(newUser, token)
-	response := helper.APIResponse("Account has been registered", http.StatusOk, "success", formatter)
+	response := helper.APIResponse("Account has been registered", http.StatusOK, "success", formatter)
 	c.JSON(http.StatusOK, response)
 }
 
@@ -75,7 +75,7 @@ func (h *userHandler) Login(c *gin.Context) {
 		return
 	}
 	formatter := user.FormatUser(loggedinUser, token)
-	response := helper.APIResponse("Sucessfully loggedin", http.StatusOk, "success", formatter)
+	response := helper.APIResponse("Sucessfully loggedin", http.StatusOK, "success", formatter)
 	c.JSON(http.StatusOK, response)
 }
 
@@ -84,7 +84,7 @@ func (h *userHandler) FetchUser(c *gin.Context) {
 
 	formatter := user.FormatUser(currentUser, "")
 
-	response := helper.APIResponse("Sucessfully fetch user data", http.StatusOk, "success", formatter)
+	response := helper.APIResponse("Sucessfully fetch user data", http.StatusOK, "success", formatter)
 
 	c.JSON(http.StatusOK, response)
 }
@@ -114,11 +114,11 @@ func (h *userHandler) CheckEmailAvailability(c *gin.Context) {
 	metaMessage := "Email has been registered"
 
 	if isEmailAvailable {
-		metaMessage := "Email is available"
+		metaMessage = "Email is available"
 	}
 
 	response := helper.APIResponse(metaMessage, http.StatusOK, "error", data)
-	c.JSON(http.StatusOk, response)
+	c.JSON(http.StatusOK, response)
 }
 
 func (h *userHandler) UploadAvatar(c *gin.Context) {
@@ -162,6 +162,6 @@ func (h *userHandler) UploadAvatar(c *gin.Context) {
 	data := gin.H{
 		"is_uploaded": true,
 	}
-	response := helper.APIResponse("Avatar successfully uploaded", http.StatusOk, "success", data)
-	c.JSON(http.StatusOk, response)
+	response := helper.APIResponse("Avatar successfully uploaded", http.StatusOK, "success", data)
+	c.JSON(http.StatusOK, response)
 }
